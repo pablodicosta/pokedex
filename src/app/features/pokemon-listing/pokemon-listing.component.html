@@ -1,0 +1,14 @@
+<div
+  class="grow h-[27rem] bg-center bg-no-repeat bg-[length:10em]"
+  [class]="{
+    'bg-[url(assets/loading.gif)]': !listItems.length
+  }"
+>
+  <app-paginated-list
+    [items]="listItems"
+    [pageSize]="pageSize"
+    [totalPages]="totalPages"
+    (lastPage)="lastPageHandler()"
+    (itemClick)="router.navigate(['/pokemon-details', $event])"
+  />
+</div>

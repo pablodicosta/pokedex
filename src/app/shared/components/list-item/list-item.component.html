@@ -1,0 +1,24 @@
+<div
+  (click)="itemClick.emit(title)"
+  class="parent cursor-pointer max-w-48 min-w-48 border-t-8 border-x-8 bg-[#3b4cca] hover:bg-[#5234a5] border-[#3b4cca] hover:border-[#5234a5]"
+>
+  <div
+    class="content flex justify-center h-40 bg-center bg-[length:3em] bg-no-repeat overflow-hidden bg-gray-300"
+    [class]="{
+      'bg-[url(assets/placeholder.png)]': !imgSrc
+    }"
+  >
+    @if (imgSrc) {
+      <img
+        [src]="imgSrc"
+        [alt]="title"
+        class="h-[10em] w-[14em] object-cover"
+      />
+    }
+  </div>
+  <div
+    class="footer capitalize text-3xl text-white leading-10 truncate h-[40px]"
+  >
+    {{ title }}
+  </div>
+</div>

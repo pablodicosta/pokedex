@@ -1,0 +1,17 @@
+<div class="flex flex-col p-4 pt-2 bg-[#cc0000]">
+  <div class="text-4xl text-white mb-1">Details</div>
+  <app-pokemon-info [pokemon]="pokemon | async" />
+  @if (((pokemon | async)?.evolutions | async)?.length) {
+    <div class="text-4xl text-white mt-3 mb-1">Evolutions</div>
+    <div class="h-20 bg-gray-300 min-h-56 p-2">
+      <app-paginated-list
+        [items]="(pokemon | async)?.evolutions | async"
+        [hidePaginator]="true"
+        [pageSize]="5"
+        (itemClick)="router.navigate(['/pokemon-details', $event])"
+      />
+    </div>
+  } @else {
+    <div class="text-4xl text-white mt-3 mb-1">No Evolutions</div>
+  }
+</div>

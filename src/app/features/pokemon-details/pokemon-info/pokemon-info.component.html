@@ -1,0 +1,25 @@
+<div class="flex flex-row min-h-80 gap-4">
+  <div
+    class="flex justify-center w-4/12 bg-gray-300 bg-center bg-no-repeat"
+    [class]="{
+      'bg-[url(assets/error404.png)]': !pokemon?.imageUrl
+    }"
+  >
+    @if (pokemon?.imageUrl) {
+      <img [src]="pokemon!.imageUrl" alt="Pokemon Image" />
+    }
+  </div>
+  <div class="flex flex-col grow bg-gray-300 p-4 text-5xl uppercase">
+    @if (pokemon) {
+      <div>Name: {{ pokemon!.name }}</div>
+      <div>Abilities:</div>
+      <ul class="list-['-'] indent-3 ml-10 columns-2 grow">
+        @for (ability of pokemon.abilities; track $index) {
+          <li>{{ ability | async }}</li>
+        }
+      </ul>
+    } @else {
+      <div>Pokemon not found</div>
+    }
+  </div>
+</div>
