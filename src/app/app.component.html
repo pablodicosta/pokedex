@@ -1,11 +1,11 @@
-<div class="container flex flex-col w-[64em] my-4">
-  <header class="mb-10">
+<div class="app-shell">
+  <header class="site-header">
     <app-header-layout />
   </header>
-  <main class="flex grow flex-col">
+  <main id="main-content" class="site-main frame">
     <router-outlet />
   </main>
-  <footer class="mt-12">
+  <footer class="site-footer">
     <app-footer-layout />
   </footer>
 </div>

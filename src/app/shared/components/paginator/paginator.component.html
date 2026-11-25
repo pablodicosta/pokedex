@@ -1,27 +1,21 @@
-<div class="flex flex-row">
-  <div class="flex grow">
-    <button
-      id="prevPageBtn"
-      class="flex flex-row text-4xl hover:text-purple-900 disabled:text-gray-500"
-      [disabled]="disabled || currentPage === 0"
-      (click)="prevClickHandler()"
-    >
-      &lt; Prev
-    </button>
-  </div>
-  <div class="flex grow justify-center">
-    <div id="pageInfo" class="text-4xl">
-      Page {{ currentPage + 1 }} of {{ totalPages }}
-    </div>
-  </div>
-  <div class="flex flex-row-reverse grow">
-    <button
-      id="nextPageBtn"
-      class="flex flex-row text-4xl hover:text-purple-900 disabled:text-gray-500"
-      [disabled]="disabled || currentPage === totalPages - 1"
-      (click)="nextClickHandler()"
-    >
-      Next &gt;
-    </button>
-  </div>
-</div>
+<nav class="pagination" aria-label="Pokémon pages">
+  <button
+    id="prevPageBtn"
+    type="button"
+    class="ui-button"
+    [disabled]="disabled || currentPage === 0"
+    (click)="prevClickHandler()"
+  >
+    <span aria-hidden="true">←</span> <span>Previous</span>
+  </button>
+  <p id="pageInfo" aria-live="polite">Page {{ currentPage + 1 }} of {{ totalPages }}</p>
+  <button
+    id="nextPageBtn"
+    type="button"
+    class="ui-button ui-button-primary"
+    [disabled]="disabled || currentPage >= totalPages - 1"
+    (click)="nextClickHandler()"
+  >
+    <span>Next</span> <span aria-hidden="true">→</span>
+  </button>
+</nav>

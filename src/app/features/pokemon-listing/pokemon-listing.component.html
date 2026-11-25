@@ -1,14 +1,28 @@
-<div
-  class="grow h-[27rem] bg-center bg-no-repeat bg-[length:10em]"
-  [class]="{
-    'bg-[url(assets/loading.gif)]': !listItems.length
-  }"
->
+<section class="catalog-hero" aria-labelledby="catalog-title">
+  <div class="hero-copy">
+    <p class="eyebrow hero-eyebrow"><span aria-hidden="true"></span> The trainer’s archive</p>
+    <h1 id="catalog-title">The Pokémon<br /> <em>index.</em></h1>
+    <p class="hero-description">From Bulbasaur onward. Browse Pokémon, discover their abilities, and see what they evolve into.</p>
+  </div>
+  <div class="hero-art" aria-hidden="true"><div class="hero-ball"></div></div>
+</section>
+
+<section aria-labelledby="entries-title">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow section-kicker">The collection</p>
+      <h2 id="entries-title">Pokémon entries</h2>
+    </div>
+    @if (pokemonCount) {
+      <span class="entry-count">{{ pokemonCount | number }} total entries</span>
+    }
+  </div>
   <app-paginated-list
     [items]="listItems"
     [pageSize]="pageSize"
     [totalPages]="totalPages"
+    [loadError]="loadError"
     (lastPage)="lastPageHandler()"
     (itemClick)="router.navigate(['/pokemon-details', $event])"
   />
-</div>
+</section>

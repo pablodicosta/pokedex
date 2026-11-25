@@ -1,27 +1,33 @@
-<div class="h-full">
-  <div
-    class="flex justify-center items-center h-full bg-center bg-no-repeat bg-[length:10em]"
-    [class]="{
-      'bg-[url(assets/loading.gif)]': isCurrentPageEmpty()
-    }"
-  >
-    <div class="grid grid-cols-5 gap-4">
-      @for (item of getPageItems(); track $index) {
+@if (isCurrentPageEmpty()) {
+  <div class="state-panel" role="status">
+    @if (loadError) {
+      <p>Couldn’t load Pokémon. Check your connection and try again.</p>
+      <button type="button" class="ui-button" (click)="lastPage.emit()">Try again</button>
+    } @else {
+      <span class="loading-dot" aria-hidden="true"></span> Loading Pokémon…
+    }
+  </div>
+} @else {
+  <div class="pokemon-grid">
+    @for (item of getPageItems(); track item) {
+      @if (item | async; as pokemon) {
         <app-list-item
-          [title]="(item | async)?.name"
-          [imgSrc]="(item | async)?.imageUrl"
+          [title]="pokemon.name"
+          [imgSrc]="pokemon.imageUrl"
+          [entryId]="pokemon.id"
+          [types]="pokemon.types"
           (itemClick)="itemClick.emit($event)"
         />
+      } @else {
+        <div class="card-skeleton" aria-hidden="true"></div>
       }
-    </div>
+    }
   </div>
-  @if (!hidePaginator) {
-    <div class="my-2">
-      <app-paginator
-        [totalPages]="totalPages"
-        [disabled]="isCurrentPageEmpty()"
-        (pageChanged)="pageChangedHandler($event)"
-      />
-    </div>
-  }
-</div>
+}
+@if (!hidePaginator && totalPages) {
+  <app-paginator
+    [totalPages]="totalPages"
+    [disabled]="isCurrentPageEmpty()"
+    (pageChanged)="pageChangedHandler($event)"
+  />
+}

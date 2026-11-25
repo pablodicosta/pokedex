@@ -1,17 +1,33 @@
-<div class="flex flex-col p-4 pt-2 bg-[#cc0000]">
-  <div class="text-4xl text-white mb-1">Details</div>
-  <app-pokemon-info [pokemon]="pokemon | async" />
-  @if (((pokemon | async)?.evolutions | async)?.length) {
-    <div class="text-4xl text-white mt-3 mb-1">Evolutions</div>
-    <div class="h-20 bg-gray-300 min-h-56 p-2">
-      <app-paginated-list
-        [items]="(pokemon | async)?.evolutions | async"
-        [hidePaginator]="true"
-        [pageSize]="5"
-        (itemClick)="router.navigate(['/pokemon-details', $event])"
-      />
-    </div>
+<a class="back-link" routerLink="/pokemon-listing"><span aria-hidden="true">←</span> Back to the index</a>
+@if (pokemon | async; as entry) {
+  @if (entry === 'loading') {
+    <p class="state-panel" role="status"><span class="loading-dot" aria-hidden="true"></span> Loading Pokémon…</p>
+  } @else if (entry === 'error') {
+    <p class="state-panel" role="status">Couldn’t load this Pokémon. Check the address or try again later.</p>
   } @else {
-    <div class="text-4xl text-white mt-3 mb-1">No Evolutions</div>
+    <app-pokemon-info [pokemon]="entry.info" />
+    <section aria-labelledby="evolutions-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow section-kicker">Related entries</p>
+          <h2 id="evolutions-title">Evolutions</h2>
+        </div>
+      </div>
+      @if (entry.evolutions | async; as related) {
+        @if (related === 'error') {
+          <p class="state-panel" role="status">Couldn’t load evolutions.</p>
+        } @else if (related.length) {
+          <app-paginated-list
+            [items]="related"
+            [hidePaginator]="true"
+            (itemClick)="router.navigate(['/pokemon-details', $event])"
+          />
+        } @else {
+          <p class="state-panel">This Pokémon has no further evolutions.</p>
+        }
+      } @else {
+        <p class="state-panel" role="status"><span class="loading-dot" aria-hidden="true"></span> Loading evolutions…</p>
+      }
+    </section>
   }
-</div>
+}

@@ -8,10 +8,15 @@ export type FetchPokemonsResponse = {
 }
 
 export type FetchPokemonDetailsResponse = {
+  id: number;
   name: string;
   sprites: {
-    front_default: string;
+    front_default: string | null;
+    other?: {
+      'official-artwork'?: { front_default: string | null };
+    };
   };
+  types: { type: { name: string } }[];
   abilities: [{
     ability: {
       name: string;

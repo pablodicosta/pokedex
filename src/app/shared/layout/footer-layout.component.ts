@@ -5,9 +5,9 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   template: `
-    <div class="flex justify-center text-3xl">
-      Made with data from Pok&eacute;API
-      (<a href="https://pokeapi.co/" target="_blank" class="mx-1 text-purple-900">https://pokeapi.co/</a>)
+    <div class="frame footer-inner">
+      <span>Pokédex <span aria-hidden="true">·</span> Trainer’s field guide</span>
+      <a href="https://pokeapi.co/">Pokémon data from PokéAPI <span aria-hidden="true">↗</span></a>
     </div>
   `
 })
