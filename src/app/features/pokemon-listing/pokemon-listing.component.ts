@@ -18,6 +18,12 @@ export class PokemonListingComponent implements OnInit {
   protected totalPages: number = 0;
 
   protected listItems: Observable<Pokemon>[] = [];
+
+  protected loadError = false;
+
+  protected get pokemonCount(): number {
+    return this.pokeApi.pokemonCount;
+  }
   
   constructor(private pokeApi: PokeApiService, protected router: Router) { }
 
@@ -26,14 +32,18 @@ export class PokemonListingComponent implements OnInit {
   }
   
   private fetchPokemons({limit, nextPage = false}:{limit?: number, nextPage?: boolean}) {
+    this.loadError = false;
     this.pokeApi.fetchPokemons({limit, nextPage})
-      .subscribe(response => {
-        this.totalPages = Math.ceil(this.pokeApi.pokemonCount / this.pageSize);
-        this.listItems.push(...response);
+      .subscribe({
+        next: response => {
+          this.totalPages = Math.ceil(this.pokeApi.pokemonCount / this.pageSize);
+          this.listItems.push(...response);
+        },
+        error: () => this.loadError = true
       });
   }
 
   protected lastPageHandler() {
-    this.fetchPokemons({nextPage: true});    
+    this.fetchPokemons(this.listItems.length ? {nextPage: true} : {limit: 20});
   }
 }

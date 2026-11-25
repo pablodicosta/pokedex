@@ -6,13 +6,10 @@ import { Pokemon } from '@model/pokemon.model';
   selector: 'app-pokemon-info',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './pokemon-info.component.html',
-  styles: `
-    img {
-      image-rendering: pixelated;
-    }
-  `
+  templateUrl: './pokemon-info.component.html'
 })
 export class PokemonInfoComponent {
-  @Input({required: true}) pokemon: Pokemon | null = null;
+  @Input({required: true}) pokemon!: Pokemon;
+
+  protected imageFailed = false;
 }

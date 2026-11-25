@@ -1,16 +1,18 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-header-layout',
   standalone: true,
-  imports: [],
+  imports: [RouterLink],
   template: `
-    <div class="flex justify-center cursor-pointer" (click)="router.navigate(['pokemon-listing'])">
-      <img src="assets/logo.png" alt="Logo">
+    <div class="frame header-inner">
+      <a class="brand" routerLink="/pokemon-listing" aria-label="Pokédex home">
+        <span class="brand-icon" aria-hidden="true"></span>
+        Pokédex<span class="brand-period" aria-hidden="true">.</span>
+      </a>
+      <span class="header-label"><span aria-hidden="true"></span> Trainer’s field guide</span>
     </div>
   `
 })
-export class HeaderLayoutComponent {
-  constructor (protected router: Router) { }
-}
+export class HeaderLayoutComponent { }

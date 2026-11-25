@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { ListItemComponent } from '@components/list-item/list-item.component';
 import { PaginatorComponent } from '@components/paginator/paginator.component';
 import { Observable } from 'rxjs';
@@ -8,12 +7,14 @@ import { Observable } from 'rxjs';
 export interface PaginatedListItem {
   name: string;
   imageUrl: string;
+  id?: number;
+  types?: string[];
 }
 
 @Component({
   selector: 'app-paginated-list',
   standalone: true,
-  imports: [ListItemComponent, PaginatorComponent, RouterModule, CommonModule],
+  imports: [ListItemComponent, PaginatorComponent, CommonModule],
   templateUrl: './paginated-list.component.html'
 })
 export class PaginatedListComponent {
@@ -26,19 +27,21 @@ export class PaginatedListComponent {
   @Input() totalPages: number = 0;
 
   @Input() hidePaginator: boolean = false;
+
+  @Input() loadError = false;
   
   @Output() lastPage = new EventEmitter();
 
   @Output() itemClick = new EventEmitter<string>();
 
   protected isCurrentPageEmpty() {
-    return !this.items![this.currentPage * this.pageSize];
+    return !this.items?.[this.currentPage * this.pageSize];
   }
 
   protected getPageItems(): Observable<PaginatedListItem>[] {
-    return this.items ? 
-      this.items!.slice(this.currentPage * this.pageSize, (this.currentPage * this.pageSize) + this.pageSize)
-      : [];
+    if (this.hidePaginator) return this.items ?? [];
+    const start = this.currentPage * this.pageSize;
+    return this.items?.slice(start, start + this.pageSize) ?? [];
   }
 
   protected pageChangedHandler(currentPage: number) {
@@ -47,8 +50,7 @@ export class PaginatedListComponent {
   }
 
   private checkLastPage() {
-    if (this.isCurrentPageEmpty() && 
-        !this.items![(this.currentPage * this.pageSize) + this.pageSize]) {
+    if (this.isCurrentPageEmpty()) {
       this.lastPage.emit();      
     }
   }

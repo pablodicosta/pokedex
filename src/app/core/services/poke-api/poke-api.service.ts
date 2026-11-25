@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Pokemon } from '@model/pokemon.model';
 import { find } from 'lodash-es';
-import { map, mergeMap, Observable, of, shareReplay, tap } from 'rxjs';
+import { catchError, map, mergeMap, Observable, of, shareReplay, tap } from 'rxjs';
 
 import { ConfigService } from '../config.service';
 import {
@@ -33,7 +33,9 @@ export class PokeApiService {
           this.pokemonCount = response.count;
           this.getPokemonsNextUrl = response.next;
         }),
-        map(response => response.results.map(result => this.fetchPokemonDetails(result.name))),
+        map(response => response.results.map(result => this.fetchPokemonDetails(result.name).pipe(
+          catchError(() => of({ name: result.name, imageUrl: '', abilities: [], evolutions: of([]) }))
+        ))),
         shareReplay()
       );
   }
@@ -42,8 +44,10 @@ export class PokeApiService {
     return this.http.get<FetchPokemonDetailsResponse>(`${this.config.pokeApiUrl}/pokemon/${name}`)
       .pipe(
         map(response => ({
+          id: response.id,
           name: response.name,
-          imageUrl: response.sprites.front_default,
+          imageUrl: response.sprites.other?.['official-artwork']?.front_default ?? response.sprites.front_default ?? '',
+          types: response.types.map(entry => entry.type.name),
           abilities: response.abilities.map(abilityItem => this.fetchAbility(abilityItem.ability.name)),
           evolutions: this.fetchEvolutions(name, response.species.name)
         } as Pokemon)),
@@ -54,7 +58,8 @@ export class PokeApiService {
   private fetchAbility(name: string, locale: string = 'en'): Observable<string | undefined> {
     return this.http.get<FetchAbilityResponse>(`${this.config.pokeApiUrl}/ability/${name}`)
       .pipe(
-        map(response => find(response.names, item => item.language.name === locale)?.name),
+        map(response => find(response.names, item => item.language.name === locale)?.name ?? name),
+        catchError(() => of(name)),
         shareReplay()
       );
   }
@@ -68,7 +73,9 @@ export class PokeApiService {
       mergeMap(specie => this.http.get<FetchEvolutionChainResponse>(specie.evolution_chain.url)),
       mergeMap(response => of(findEvolutionsInChain(name, response.chain))),
       map(evolutionChain => getEvolutionNames(evolutionChain)),
-      map(evolutionNames => evolutionNames.map(evolutionName => this.fetchPokemonDetails(evolutionName))),
+      map(evolutionNames => evolutionNames.map(evolutionName => this.fetchPokemonDetails(evolutionName).pipe(
+        catchError(() => of({ name: evolutionName, imageUrl: '', abilities: [], evolutions: of([]) }))
+      ))),
       shareReplay()
     );
   }
